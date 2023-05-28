@@ -6,7 +6,7 @@ info:
   version: 0.7.0
 servers:
 # local:
-- url: "http://127.0.0.1:80"
+- url: "http://127.0.0.1:3306"
 # remote:
 # - url: "http://132.72.65.211"
 tags:
