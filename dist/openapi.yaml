@@ -109,14 +109,14 @@ paths:
     post:
       tags:
       - Recipes
-      summary: get three random recipes
+      summary: Get three random recipes
       responses:
         "200":
-          description: three random recipes
+          description: Get three random recipes
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Recipe'
+                $ref: '#/components/schemas/3RandomRecipes'
         "404":
           description: not found
 
@@ -124,8 +124,8 @@ paths:
     post:
       tags:
       - Recipes
-      summary: add a new recipe
-      description: add a new recipe
+      summary: Add a new recipe
+      description: Add a new recipe
       requestBody:
         content:
           application/json:
