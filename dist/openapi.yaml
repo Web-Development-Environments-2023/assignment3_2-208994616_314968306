@@ -346,14 +346,14 @@ components:
           description: password
           format: password
           example: John!Smith55
-    "3RandomRecipes":
+    3RandomRecipes:
       maxItems: 3
       minItems: 3
       type: array
       description: Three random recipes
       items:
         $ref: '#/components/schemas/Recipe'
-    "3LastWatchedRecipes":
+    3LastWatchedRecipes:
       maxItems: 3
       minItems: 3
       type: array
