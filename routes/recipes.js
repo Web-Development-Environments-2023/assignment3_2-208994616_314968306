@@ -17,4 +17,18 @@ router.get("/:recipeId", async (req, res, next) => {
   }
 });
 
+/**
+ * This path returns a full details of 3 random recipes
+ */
+router.get("/getThreeRandomRecipes", async (req, res, next) => {
+  console.log("liorrrr");
+  try {
+    let random_3_recipes = await recipes_utils.getThreeRandomRecipes();
+    console.log("random_3_recipes = " + random_3_recipes);
+    res.send(random_3_recipes);
+  } catch(error) {
+    next(error);
+  }
+});
+
 module.exports = router;
