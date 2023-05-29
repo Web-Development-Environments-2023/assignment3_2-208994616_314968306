@@ -106,7 +106,7 @@ paths:
                 $ref: '#/components/schemas/Recipe'
                 
   /recipes/getThreeRandomRecipes:
-    get:
+    post:
       tags:
       - Recipes
       summary: get three random recipes

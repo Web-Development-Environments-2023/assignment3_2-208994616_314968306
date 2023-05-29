@@ -38,37 +38,51 @@ async function getRecipeDetails(recipe_id) {
 
 /////////////////////////////////////////// Three Random Recipes
 
-// async function getThreeRandomRecipesInformation() {
-//     return await axios.get(`${api_domain}/random`, {
-//         params: {
-//             number: 10,
-//             includeNutrition: false,
-//             apiKey: process.env.spooncular_apiKey
-//         }
-//     });
-// }
-
 async function getThreeRandomRecipesInformation() {
-
-    console.log("url = " + api_domain + "/random")
-    const response = await axios.get(`${api_domain}/random`, {
+    return await axios.get(`${api_domain}/random`, {
         params: {
             number: 10,
             apiKey: process.env.spooncular_apiKey
         }
     });
-    console.log("response = " + response);
-    return response;
 }
 
 async function getThreeRandomRecipes() {
-    console.log("liorrr")
     let random_pool = await getThreeRandomRecipesInformation();
     let filterd_random_pool = random_pool.data.recipes.filter((random) => (random.instructions != "") && (random.image && random.image != ""));
     if (filterd_random_pool < 3 ) {
         return getThreeRandomRecipes();
     }
-    return extractPreviewRecipeDetails([filterd_random_pool[0], filterd_random_pool[1], filterd_random_pool[2]]);
+    return getPreviewDetails([filterd_random_pool[0], filterd_random_pool[1], filterd_random_pool[2]]);
+}
+
+function getPreviewDetails(recipes_list) {
+    return recipes_list.map(recipe_info => {
+        let data = recipe_info;
+        if (recipe_info.data) {
+            data = recipe_info.data;
+        }
+        const {
+            id,
+            title,
+            readyInMinutes,
+            image,
+            aggregateLikes,
+            vegan,
+            vegetarian,
+            glutenFree,
+        } = data;
+        return {
+            id: id,
+            title: title,
+            image: image,
+            readyInMinutes: readyInMinutes,
+            popularity: aggregateLikes,
+            vegan: vegan,
+            vegetarian: vegetarian,
+            glutenFree: glutenFree,
+        }
+    })
 }
 
 
