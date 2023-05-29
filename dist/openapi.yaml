@@ -6,7 +6,7 @@ info:
   version: 0.7.0
 servers:
 # local:
-- url: "http://127.0.0.1:80"
+- url: "http://127.0.0.1:3000"
 # remote:
 # - url: "http://132.72.65.211"
 tags:
@@ -30,7 +30,7 @@ paths:
       responses:
         "201":
           description: user added to db
-        "409":
+        "400":
           description: username taken
   /Login:
     post:
@@ -78,7 +78,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RecipePreview'
+                $ref: '#/components/schemas/Recipe'
         "404":
           description: recipeId is not exists
   /recipes/recipePreview:
@@ -87,11 +87,15 @@ paths:
       - Recipes
       summary: show preview of recipe
       description: show preview of recipe
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RecipeID'
+      parameters:
+      - name: recipeId
+        in: path
+        description: recipe's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
       responses:
         "200":
           description: recipe preview
@@ -135,11 +139,15 @@ paths:
       - Users
       summary: add to favorite
       description: add to favorite
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/RecipeID'
+      parameters:
+      - name: recipeId
+        in: path
+        description: recipe's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
       responses:
         "200":
           description: recipe added to favorites
@@ -246,16 +254,16 @@ components:
     Recipe:
       type: object
       properties:
-        RecipeImg:
-          type: string
-          description: image
-        RecipeID:
+        id:
           type: string
           description: ID
-        RecipeName:
+        title:
           type: string
           description: name
           format: url
+        image:
+          type: string
+          description: image
         CookingTime:
           type: integer
           description: cooking time
@@ -293,7 +301,7 @@ components:
           pattern: "^[A-Za-z]"
           type: string
           description: username length of 3-8 characters
-          example: ExampleUser
+          example: User
         firstname:
           type: string
           description: first name
@@ -313,13 +321,6 @@ components:
           description: password in length of 5-10 chars at least one of them is a number and a special characters
           format: password
           example: John!Smith55
-        passwordConfirmation:
-          maxLength: 10
-          minLength: 5
-          type: string
-          description: password confirmation
-          format: password
-          example: John!Smith55
         email:
           type: string
           description: email
@@ -337,7 +338,7 @@ components:
           minLength: 3
           type: string
           description: username
-          example: ExampleUser
+          example: User
         password:
           maxLength: 10
           minLength: 5
@@ -472,8 +473,6 @@ components:
         servings:
           type: integer
           description: servings amount
-    RecipeID:
-      type: string
     SearchResults:
       maxItems: 15
       minItems: 5

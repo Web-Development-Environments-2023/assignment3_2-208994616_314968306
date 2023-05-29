@@ -16,13 +16,12 @@ router.post("/Register", async (req, res, next) => {
       country: req.body.country,
       password: req.body.password,
       email: req.body.email,
-      profilePic: req.body.profilePic
     }
     let users = [];
     users = await DButils.execQuery("SELECT username from users");
 
     if (users.find((x) => x.username === user_details.username))
-      throw { status: 409, message: "Username taken" };
+      throw { status: 400, message: "Username taken" };
 
     // add the new username
     let hash_password = bcrypt.hashSync(
