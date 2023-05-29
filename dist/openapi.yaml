@@ -57,14 +57,16 @@ paths:
       responses:
         "200":
           description: user logged out
-  /recipes/recipeFullInfo/{recipe_id}:
+  /recipes/{recipeId}:
     get:
       tags:
       - Recipes
-      summary: get full recipe by id
+      summary: Return preview details on recipe by his ID
+      description: Return preview details on recipe by his ID
       parameters:
-      - name: recipe_id
+      - name: recipeId
         in: path
+        description: recipe's id
         required: true
         style: simple
         explode: false
@@ -72,11 +74,13 @@ paths:
           type: integer
       responses:
         "200":
-          description: recipe
+          description: data about the recipe
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FullRecipe'
+                $ref: '#/components/schemas/RecipePreview'
+        "404":
+          description: recipeId is not exists
   /recipes/recipePreview:
     post:
       tags:
