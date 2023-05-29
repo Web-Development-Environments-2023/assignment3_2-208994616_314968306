@@ -1,12 +1,12 @@
 const DButils = require("./DButils");
 
-async function markAsFavorite(user_id, recipe_id){
-    await DButils.execQuery(`insert into FavoriteRecipes values ('${user_id}',${recipe_id})`);
+async function markAsFavorite(username, recipeID){
+    await DButils.execQuery(`insert into FavoriteRecipes values ('${username}',${recipeID})`);
 }
 
-async function getFavoriteRecipes(user_id){
-    const recipes_id = await DButils.execQuery(`select recipe_id from FavoriteRecipes where user_id='${user_id}'`);
-    return recipes_id;
+async function getFavoriteRecipes(username){
+    const recipeID_array = await DButils.execQuery(`select recipeID from FavoriteRecipes where username='${username}'`);
+    return recipeID_array;
 }
 
 

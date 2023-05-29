@@ -19,7 +19,7 @@ async function getRecipeInformation(recipe_id) {
 }
 
 
-async function getRecipeDetails(recipe_id) {
+async function getRecipePreview(recipe_id) {
     let recipe_info = await getRecipeInformation(recipe_id);
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = recipe_info.data;
     console.log(recipe_info.data)
@@ -34,6 +34,13 @@ async function getRecipeDetails(recipe_id) {
         glutenFree: glutenFree,
         
     }
+}
+
+async function getRecipesPreview(recipes_id_array) {
+    res = []
+    recipes_id_array.forEach(element => {
+        res.append(getRecipePreview(element))
+    });
 }
 
 /////////////////////////////////////////// Three Random Recipes
@@ -87,8 +94,9 @@ function getPreviewDetails(recipes_list) {
 
 
 
-exports.getRecipeDetails = getRecipeDetails;
+exports.getRecipeDetails = getRecipePreview;
 exports.getThreeRandomRecipes = getThreeRandomRecipes;
+exports.getRecipesPreview = getRecipesPreview;
 
 
 
