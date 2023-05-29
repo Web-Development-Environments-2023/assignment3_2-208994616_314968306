@@ -87,15 +87,16 @@ paths:
       - Recipes
       summary: show preview of recipe
       description: show preview of recipe
-      parameters:
-      - name: recipeId
-        in: path
-        description: recipe's id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipeId:
+                  type: integer
+                  description: recipe's id which the user saved
+                  example: 716429
       responses:
         "200":
           description: recipe preview
@@ -139,15 +140,16 @@ paths:
       - Users
       summary: add to favorite
       description: add to favorite
-      parameters:
-      - name: recipeId
-        in: path
-        description: recipe's id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipeId:
+                  type: integer
+                  description: recipe's id which the user saved
+                  example: 716429
       responses:
         "200":
           description: recipe added to favorites
@@ -380,7 +382,7 @@ components:
           type: string
           description: image
         RecipeID:
-          type: string
+          type: integer
           description: ID
         RecipeName:
           type: string
@@ -438,7 +440,7 @@ components:
           type: string
           description: image
         RecipeID:
-          type: string
+          type: integer
           description: ID
         RecipeName:
           type: string

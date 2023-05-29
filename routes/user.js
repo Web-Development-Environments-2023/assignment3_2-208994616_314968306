@@ -16,7 +16,6 @@ router.use(async function (req, res, next) {
       }
     }).catch(err => next(err));
   } else {
-    console.log(req.session.username)
     res.sendStatus(401);
   }
 });
@@ -28,8 +27,8 @@ router.use(async function (req, res, next) {
 router.post('/AddToFavorites', async (req,res,next) => {
   try{
     const username = req.session.username;
-    const recipeID = req.params.recipeId;
-    await user_utils.markAsFavorite(username,recipeID);
+    const recipeID = req.body.recipeId;
+    await user_utils.markAsFavorite(username, recipeID);
     res.status(200).send("The Recipe successfully saved as favorite");
     } catch(error){
     next(error);
