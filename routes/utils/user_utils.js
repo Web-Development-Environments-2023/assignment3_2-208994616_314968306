@@ -10,11 +10,12 @@ async function getFavoriteRecipes(username){
 }
 
 async function markAsWatched(username, recipeID){
-    await DButils.execQuery(`INSERT INTO WatchedRecipes (username, recipeID) VALUES ('${username}','${recipeID}')`);
+    await DButils.execQuery(`INSERT INTO WatchedRecipes (username, recipeID, creation_time) VALUES ('${username}','${recipeID}', NOW())`);
 }
 
 async function getWatchedRecipes(username){
-    return await DButils.execQuery(`select recipeID from WatchedRecipes where username='${username}' order by creation_time DESC`);
+    const recipeID_array = await DButils.execQuery(`select recipeID from WatchedRecipes where username='${username}' order by creation_time DESC`);
+    return recipeID_array
 }
 
 
