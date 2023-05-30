@@ -71,6 +71,15 @@ router.get('/ThreeLastWatchedRecipes', async (req,res,next) => {
   }
 });
 
+router.post("/addNewRecipe", async (req, res, next) => {
+  try {
+      const new_recipe = await recipe_utils.addNewRecipe(req.session.username,req.body);
+      res.status(200).send(new_recipe); // TODO FIX ERROR HERE - Probably wrong send type
+  } catch (error) {
+      next(error);
+  }
+});
+
 
 
 

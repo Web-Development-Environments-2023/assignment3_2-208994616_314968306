@@ -1,6 +1,7 @@
 const axios = require("axios");
 const api_domain = "https://api.spoonacular.com/recipes";
 const api_domain_random = api_domain + "/random";
+const DButils = require("./DButils");
 
 
 
@@ -48,6 +49,33 @@ function filterRecipes(recipe) {
     return (recipe.instructions != "") && (recipe.image && recipe.image != "");
 }
 
+async function addNewRecipe(username, recipe) {
+    // REMOVING LIKES MAYBE??
+    try {
+        const query = `INSERT INTO UserRecipes (username, RecipeImg, RecipeName, CookingTime, Likes, GlutenFree, isVegan, isVegetarian, ingredients, instructions, servings)
+                   VALUES ('${username}', '${recipe.RecipeImg}', '${recipe.RecipeName}', ${recipe.CookingTime}
+                   , 0, ${recipe.GlutenFree}, ${recipe.isVegan}, ${recipe.isVegetarian}
+                   , '${recipe.ingredients}', '${recipe.instructions}', ${recipe.servings})`;
+
+        const result = await DButils.execQuery(query);
+        // Might need to change the out to be Full recipe
+        const out = {
+            id: result.insertId,
+            title: recipe.RecipeName,
+            readyInMinutes: recipe.CookingTime,
+            image: recipe.RecipeImg,
+            popularity: 0,
+            vegan: recipe.isVegan,
+            vegetarian: recipe.isVegetarian,
+            glutenFree: recipe.GlutenFree
+        };
+        return out;
+        } catch (error) {
+            console.error('Error adding new recipe:', error);
+            throw error;
+        }
+    }
+
 /////////////////////////////////////////// Helping functions
 function fullToPreviewRecipe(fullRecipe) {
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = fullRecipe;
@@ -77,3 +105,4 @@ async function arrayOfIdToPreviewRecipes(recipes_id_array) {
 exports.getRecipeDetails = getRecipePreview;
 exports.getThreeRandomRecipes = getThreeRandomRecipes;
 exports.arrayOfIdToPreviewRecipes = arrayOfIdToPreviewRecipes;
+exports.addNewRecipe = addNewRecipe;
