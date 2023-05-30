@@ -14,6 +14,12 @@ CREATE TABLE FavoriteRecipes (
   PRIMARY KEY(username, recipeID)
 )
 
+CREATE TABLE LastWatchedRecipes (
+  username VARCHAR(8) NOT NULL,
+  recipeID INT NOT NULL,
+  PRIMARY KEY(username, recipeID)
+)
+
 -- CREATE TABLE Recipes (
 --   id INT PRIMARY KEY AUTO_INCREMENT,
 --   RecipeImg VARCHAR(255) NOT NULL,

@@ -32,6 +32,7 @@ paths:
           description: user added to db
         "400":
           description: username taken
+
   /Login:
     post:
       tags:
@@ -48,6 +49,7 @@ paths:
           description: user logged in
         "401":
           description: username and/or password are incorrect
+
   /Logout:
     post:
       tags:
@@ -57,6 +59,7 @@ paths:
       responses:
         "200":
           description: user logged out
+
   /recipes/{recipeId}:
     get:
       tags:
@@ -81,6 +84,7 @@ paths:
                 $ref: '#/components/schemas/Recipe'
         "404":
           description: recipeId is not exists
+
   /recipes/recipePreview:
     post:
       tags:
@@ -105,20 +109,23 @@ paths:
               schema:
                 $ref: '#/components/schemas/Recipe'
                 
-  /recipes/getThreeRandomRecipes:
-    post:
+  /recipes/random:
+    get:
       tags:
       - Recipes
-      summary: Get three random recipes
+      summary: Get 3 random recipes
+      description: Return 3 random recipes to retrieve
       responses:
-        "200":
-          description: Get three random recipes
+        '200':
+          description: Get 3 random recipes
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/3RandomRecipes'
-        "404":
-          description: not found
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        '404':
+          description: No recipes found
 
   /recipes/addNewRecipe:
     post:
@@ -157,19 +164,27 @@ paths:
       responses:
         "200":
           description: recipe added to favorites
+  
   /users/getFavorites:
     get:
       tags:
       - Users
-      summary: get favorite recipes
-      description: get favorite recipes
+      summary: Get user's favorite recipes
+      description: Get user's favorite recipes
       responses:
         "200":
           description: favorites found
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UserPersonalResults'
+              type: array
+              items:
+                $ref: '#/components/schemas/Recipe'
+        "404":
+          description: No recipes found
+        "401":
+          description: user is not authorized
+
   /users/getCreatedRecipes:
     get:
       tags:
@@ -249,19 +264,26 @@ paths:
     get:
       tags:
       - Users
-      - Recipes
       summary: show the three last watched recipes
       description: show the three last watched recipes
       responses:
         "200":
-          description: '#/components/schemas/3LastWatchedRecipes'
+          description: Last watched recipes found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                $ref: '#/components/schemas/FullRecipe'
+        '404':
+          description: No recipes found
 components:
   schemas:
     Recipe:
       type: object
       properties:
         id:
-          type: string
+          type: integer
           description: ID
         title:
           type: string
@@ -352,20 +374,6 @@ components:
           description: password
           format: password
           example: John!Smith55
-    3RandomRecipes:
-      maxItems: 3
-      minItems: 3
-      type: array
-      description: Three random recipes
-      items:
-        $ref: '#/components/schemas/Recipe'
-    3LastWatchedRecipes:
-      maxItems: 3
-      minItems: 3
-      type: array
-      description: 3 last viewed recipes
-      items:
-        $ref: '#/components/schemas/FullRecipe'
     FullRecipe:
       required:
       - CookingTime
@@ -482,10 +490,6 @@ components:
     SearchResults:
       maxItems: 15
       minItems: 5
-      type: array
-      items:
-        $ref: '#/components/schemas/Recipe'
-    UserPersonalResults:
       type: array
       items:
         $ref: '#/components/schemas/Recipe'

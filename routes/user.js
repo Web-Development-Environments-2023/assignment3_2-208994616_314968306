@@ -39,15 +39,32 @@ router.post('/AddToFavorites', async (req,res,next) => {
  * This path returns the favorites recipes that were saved by the logged-in user
  */
 router.get('/getFavorites', async (req,res,next) => {
+  console.log("saar")
   try{
     const username = req.session.username;
-    let favorite_recipes = {};
-    const recipeID = await user_utils.getFavoriteRecipes(username);
-    
+    // let favorite_recipes = {};
+    const recipe_ids_dict = await user_utils.getFavoriteRecipes(username);
+    console.log("recipes_id_array" + recipe_ids_dict)
+    let recipe_ids_array = [];
+    recipe_ids_dict.map((element) => recipe_ids_array.push(element.recipeID)); //extracting the recipe ids into array
+    const results = await recipe_utils.arrayOfIdToPreviewRecipes(recipe_ids_array);
+    res.status(200).send(results);
+  } catch(error){
+    next(error); 
+  }
+});
+
+/**
+ * This path returns the last viewed watched recipes by the logged-in user
+ */
+router.get('/ThreeLastWatchedRecipes', async (req,res,next) => {
+  try{
+    const username = req.session.username;
+    const recipes_id = await user_utils.getWatchedRecipes(username);
     let recipes_id_array = [];
-    recipeID.map((element) => recipes_id_array.push(element.recipeID)); //extracting the recipe ids into array
+    recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+    recipes_id_array = recipes_id_array.slice(0, 3);
     const results = await recipe_utils.getRecipesPreview(recipes_id_array);
-    console.log(await results);
     res.status(200).send(results);
   } catch(error){
     next(error); 

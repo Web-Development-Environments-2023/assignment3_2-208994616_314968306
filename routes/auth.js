@@ -32,7 +32,6 @@ router.post("/Register", async (req, res, next) => {
       `INSERT INTO users VALUES ('${user_details.username}', '${user_details.firstname}', '${user_details.lastname}',
       '${user_details.country}', '${hash_password}', '${user_details.email}')`
     );
-    console.log(await db_ret)
     res.status(201).send({ message: "user created", success: true });
   } catch (error) {
     next(error);
@@ -59,7 +58,6 @@ router.post("/Login", async (req, res, next) => {
 
     // Set cookie
     req.session.username = user.username;
-
 
     // return cookie
     res.status(200).send({ message: "login succeeded", success: true });
