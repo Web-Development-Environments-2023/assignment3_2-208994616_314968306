@@ -281,6 +281,26 @@ paths:
         "200":
           description: '#/components/schemas/SearchResults'
 
+  /users/AddToWatched:
+    post:
+      tags:
+      - Users
+      summary: add to favorite
+      description: add to favorite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipeId:
+                  type: integer
+                  description: recipe's id which the user saved
+                  example: 716429
+      responses:
+        "200":
+          description: recipe added to favorites
+
   /users/ThreeLastWatchedRecipes:
     get:
       tags:
