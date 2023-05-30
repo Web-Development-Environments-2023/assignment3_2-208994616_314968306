@@ -85,7 +85,7 @@ paths:
         "404":
           description: recipeId is not exists
 
-  /recipes/recipePreview:
+  /recipes/showPreviewRecipe:
     post:
       tags:
       - Recipes
@@ -108,6 +108,30 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Recipe'
+
+  /recipes/showFullRecipe:
+    post:
+      tags:
+      - Recipes
+      summary: Show full information of recipe
+      description: Show full information of recipe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                recipeId:
+                  type: integer
+                  description: recipe's id which the user saved
+                  example: 100
+      responses:
+        "200":
+          description: recipe preview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FullRecipe'
                 
   /recipes/random:
     get:
@@ -137,7 +161,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewRecipe'
+              $ref: '#/components/schemas/FullRecipe'
       responses:
         "200":
           description: recipe preview
@@ -145,6 +169,27 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Recipe'
+
+  /users/getCreatedRecipes:
+    get:
+      tags:
+      - Users
+      summary: get user created recipes
+      description: get user created recipes
+      responses:
+        "200":
+          description: there is at least one created recipe by the user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+        "404":
+          description: No recipes found
+        "401":
+          description: user is not authorized
+
   /users/AddToFavorites:
     post:
       tags:
@@ -177,39 +222,14 @@ paths:
           content:
             application/json:
               schema:
-              type: array
-              items:
-                $ref: '#/components/schemas/Recipe'
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
         "404":
           description: No recipes found
         "401":
           description: user is not authorized
 
-  /users/getCreatedRecipes:
-    get:
-      tags:
-      - Users
-      summary: get user created recipes
-      description: get user created recipes
-      responses:
-        "200":
-          description: there is at least one created recipe by the user
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserPersonalResults'
-  /user/lastwatched:
-    get:
-      tags:
-      - user
-      description: Get the preview of the last recipe the user watched
-      responses:
-        "200":
-          description: the last recipe the user watched
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Recipe'
   /users//search/{query}/{number}/{cuisine}/{diet}/{intolerances}:
     get:
       tags:
@@ -260,12 +280,13 @@ paths:
       responses:
         "200":
           description: '#/components/schemas/SearchResults'
+
   /users/ThreeLastWatchedRecipes:
     get:
       tags:
       - Users
-      summary: show the three last watched recipes
-      description: show the three last watched recipes
+      summary: Show the three last watched recipes
+      description: Show the three last watched recipes
       responses:
         "200":
           description: Last watched recipes found
@@ -274,9 +295,12 @@ paths:
               schema:
                 type: array
                 items:
-                $ref: '#/components/schemas/FullRecipe'
-        '404':
+                $ref: '#/components/schemas/Recipe'
+        "401":
+          description: user is not authorized
+        "404":
           description: No recipes found
+
 components:
   schemas:
     Recipe:
