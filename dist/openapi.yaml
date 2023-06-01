@@ -419,8 +419,6 @@ components:
       - RecipeName
       - ingredients
       - instructions
-      - isClicked
-      - isFavorite
       - isVegan
       - isVegetarian
       - servings
@@ -450,12 +448,6 @@ components:
         isVegetarian:
           type: boolean
           description: is vegeterian
-        isCicked:
-          type: boolean
-          description: was clicked by the user
-        isFavorite:
-          type: boolean
-          description: was favorited by the user
         ingredients:
           type: string
           description: ingredients
