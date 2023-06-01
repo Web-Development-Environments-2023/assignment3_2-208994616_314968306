@@ -13,14 +13,14 @@ tags:
 - name: Authentication
 - name: Users
 - name: Recipes
-- name: Search
+
 paths:
-  /Register:
+  /register:
     post:
       tags:
       - Authentication
-      summary: register a new user
-      description: register a new user
+      summary: Register a new user
+      description: Register a new user
       requestBody:
         content:
           application/json:
@@ -29,16 +29,16 @@ paths:
         required: true
       responses:
         "201":
-          description: user added to db
+          description: User added to db
         "400":
-          description: username taken
+          description: Username taken
 
-  /Login:
+  /login:
     post:
       tags:
       - Authentication
-      summary: login user operation
-      description: check if the username is in the database and the password matches
+      summary: Login user operation
+      description: Check if the username is in the database and the password matches
       requestBody:
         content:
           application/json:
@@ -46,19 +46,19 @@ paths:
               $ref: '#/components/schemas/LoginInfo'
       responses:
         "200":
-          description: user logged in
+          description: User logged in
         "401":
-          description: username and/or password are incorrect
+          description: Username and/or Password are incorrect
 
-  /Logout:
+  /logout:
     post:
       tags:
       - Authentication
-      summary: log out user
-      description: log out user
+      summary: Log out user
+      description: Log out user
       responses:
         "200":
-          description: user logged out
+          description: User logged out
 
   /recipes/{recipeId}:
     get:
@@ -77,7 +77,7 @@ paths:
           type: integer
       responses:
         "200":
-          description: data about the recipe
+          description: Data about the recipe
           content:
             application/json:
               schema:
@@ -89,8 +89,8 @@ paths:
     post:
       tags:
       - Recipes
-      summary: show preview of recipe
-      description: show preview of recipe
+      summary: Show preview of recipe
+      description: Show preview of recipe
       requestBody:
         content:
           application/json:
@@ -127,7 +127,7 @@ paths:
                   example: 100
       responses:
         "200":
-          description: recipe preview
+          description: Recipe full information
           content:
             application/json:
               schema:
@@ -138,7 +138,7 @@ paths:
       tags:
       - Recipes
       summary: Get 3 random recipes
-      description: Return 3 random recipes to retrieve
+      description: Get 3 random recipes
       responses:
         '200':
           description: Get 3 random recipes
@@ -154,7 +154,7 @@ paths:
   /recipes/addNewRecipe:
     post:
       tags:
-      - Recipes
+      - Users
       summary: Add a new recipe
       description: Add a new recipe
       requestBody:
@@ -190,7 +190,7 @@ paths:
         "401":
           description: user is not authorized
 
-  /users/AddToFavorites:
+  /users/addToFavorites:
     post:
       tags:
       - Users
@@ -230,58 +230,50 @@ paths:
         "401":
           description: user is not authorized
 
-  /users//search/{query}/{number}/{cuisine}/{diet}/{intolerances}:
-    get:
+  /recipes/search/{query}/{amount}:
+    post:
       tags:
       - Users
-      summary: search recipes
-      description: search recipes using external API
+      summary: Search for recipes in spoonacular API
+      description: Search for recipes in spoonacular API
       parameters:
       - name: query
         in: path
-        description: search query
+        description: Search text
         required: true
         style: simple
         explode: false
         schema:
           type: string
-      - name: number
+      - name: amount
         in: path
-        description: number of results (5-15)
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      - name: cuisine
-        in: path
-        description: is cuisin food needed or not
+        description: Number of results
         required: true
         style: simple
         explode: false
         schema:
           type: string
-      - name: diet
-        in: path
-        description: diet
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      - name: intolerances
-        in: path
-        description: intolernces needed to be considered
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
+      requestBody:
+        description: Filter parameters for query (cuisine/diet/intolerance)
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryFilters'
+        required: false
       responses:
         "200":
-          description: '#/components/schemas/SearchResults'
+          description: favorites found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Recipe'
+          
+        "404":
+          description: not found
 
-  /users/AddToWatched:
+  /users/addToWatched:
     post:
       tags:
       - Users
@@ -301,7 +293,7 @@ paths:
         "200":
           description: recipe added to favorites
 
-  /users/ThreeLastWatchedRecipes:
+  /users/hreeLastWatchedRecipes:
     get:
       tags:
       - Users
@@ -531,9 +523,24 @@ components:
         servings:
           type: integer
           description: servings amount
-    SearchResults:
-      maxItems: 15
-      minItems: 5
-      type: array
-      items:
-        $ref: '#/components/schemas/Recipe'
+    QueryFilters:
+      type: object
+      properties:
+        cuisine:
+          type: array
+          items:
+            type: string
+          description: cuisine of recipe
+          example: [italian]
+        diet:
+          type: array
+          items:
+            type: string
+          description: diet kind of recipe
+          example: [vegetarian]
+        intolerances:
+          type: array
+          items:
+            type: string
+          description: intolerance kind of recipe
+          example: [Gluten]

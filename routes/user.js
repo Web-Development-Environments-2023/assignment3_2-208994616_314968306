@@ -24,7 +24,7 @@ router.use(async function (req, res, next) {
 /**
  * This path gets body with recipeId and save this recipe in the favorites list of the logged-in user
  */
-router.post('/AddToFavorites', async (req,res,next) => {
+router.post('/addToFavorites', async (req,res,next) => {
   try{
     const username = req.session.username;
     const recipeID = req.body.recipeId;
@@ -56,7 +56,7 @@ router.get('/getFavorites', async (req,res,next) => {
 /**
  * This path gets body with recipeId and save this recipe in the watched list of the logged-in user
  */
-router.post('/AddToWatched', async (req,res,next) => {
+router.post('/addToWatched', async (req,res,next) => {
   try{
     const username = req.session.username;
     const recipeID = req.body.recipeId;
@@ -70,7 +70,7 @@ router.post('/AddToWatched', async (req,res,next) => {
 /**
  * This path returns the last viewed watched recipes by the logged-in user
  */
-router.get('/ThreeLastWatchedRecipes', async (req,res,next) => {
+router.get('/threeLastWatchedRecipes', async (req,res,next) => {
   try{
     const username = req.session.username;
     const recipe_ids_dict = await user_utils.getWatchedRecipes(username);
@@ -85,6 +85,31 @@ router.get('/ThreeLastWatchedRecipes', async (req,res,next) => {
   } catch(error){
     next(error); 
   }
+});
+
+/**
+ * Search for recipes from spooncular API.
+ */
+router.post("/search/:query/:amount", async (req, res, next) => {
+  const {query, amount} = req.params;
+  //set serach params
+  search_params = {};
+  search_params.query = query;
+  search_params.amount = amount;
+  search_params.instructionsRequired = true;
+  search_params.apiKey = process.env.spooncular_apiKey;
+
+  //gives a default num
+  if (num != 5 && num != 10 && num != 15) {
+    search_params.number = 5;
+  }
+  //check if query params exists (cuisine / diet / intolerances) and add them to serach_params
+  search_utils.extarctQueryParams(req.body, search_params);
+  search_utils.searchForRecipes(search_params)
+  .then((recipes) => res.send(recipes))
+  .catch((err) => {
+    next(err);
+  })
 });
 
 
