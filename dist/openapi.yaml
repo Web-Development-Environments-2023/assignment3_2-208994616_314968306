@@ -164,11 +164,7 @@ paths:
               $ref: '#/components/schemas/NewRecipe'
       responses:
         "200":
-          description: recipe preview
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Recipe'
+          description: new recipe added
 
   /users/getCreatedRecipes:
     get:
