@@ -151,7 +151,7 @@ paths:
         '404':
           description: No recipes found
 
-  /recipes/addNewRecipe:
+  /users/addNewRecipe:
     post:
       tags:
       - Users
@@ -161,7 +161,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FullRecipe'
+              $ref: '#/components/schemas/NewRecipe'
       responses:
         "200":
           description: recipe preview
@@ -469,27 +469,18 @@ components:
       required:
       - CookingTime
       - GlutenFree
-      - RecipeID
       - RecipeImg
       - RecipeName
       - ingredients
       - instructions
-      - isClicked
-      - isFavorite
       - isVegan
       - isVegetarian
       - servings
-      - username
       type: object
       properties:
-        username:
-          type: string
         RecipeImg:
           type: string
           description: image
-        RecipeID:
-          type: integer
-          description: ID
         RecipeName:
           type: string
           description: name
@@ -497,8 +488,6 @@ components:
         CookingTime:
           type: integer
           description: cooking time
-        Likes:
-          type: integer
         GlutenFree:
           type: boolean
           description: is gluten-free
@@ -508,12 +497,6 @@ components:
         isVegetarian:
           type: boolean
           description: is vegeterian
-        isCicked:
-          type: boolean
-          description: was clicked by the user
-        isFavorite:
-          type: boolean
-          description: was favorited by the user
         ingredients:
           type: string
           description: ingredients
