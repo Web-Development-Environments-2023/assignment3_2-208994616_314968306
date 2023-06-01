@@ -120,12 +120,7 @@ async function arrayOfIdToPreviewRecipes(recipes_id_array) {
 }
 
 function convertIntToBoolean (num) {
-    if (num === 1) 
-        return true;
-    else if (num === 0) 
-        return false;
-    else
-        throw new Error("Invalid input. Expected 0 or 1.");
+    return num === 1 ? true : false;
 }
 
 
