@@ -230,48 +230,62 @@ paths:
         "401":
           description: user is not authorized
 
-  /recipes/search/{query}/{amount}:
-    post:
+  /users/search:
+    get:
       tags:
-      - Users
-      summary: Search for recipes in spoonacular API
+        - Users
+      summary: Search recipes by text and filters
       description: Search for recipes in spoonacular API
       parameters:
-      - name: query
-        in: path
-        description: Search text
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      - name: amount
-        in: path
-        description: Number of results
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: string
-      requestBody:
-        description: Filter parameters for query (cuisine/diet/intolerance)
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/QueryFilters'
-        required: false
+        - name: query
+          in: query
+          description: Search free text
+          required: true
+          schema:
+            type: string
+            example: Cake
+        - name: quantity
+          in: query
+          description: Number of results
+          required: true
+          schema:
+            type: integer
+            default: 5
+            example: 5
+        - name: cuisine
+          in: query
+          description: Cuisine of recipe
+          required: false
+          schema:
+            type: string
+            example: African
+        - name: diet
+          in: query
+          description: Diet kind of recipe
+          required: false
+          schema:
+            type: string
+            example: Gluten Free
+        - name: intolerances
+          in: query
+          description: Intolerances kind of recipe
+          required: false
+          schema:
+            type: string
+            example: Peanut
       responses:
         "200":
-          description: favorites found
+          description: Searched recipes found
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Recipe'
-          
+                  $ref: "#/components/schemas/Recipe"
+        "400":
+          description: Invalid params supplied
         "404":
-          description: not found
+          description: No recipes found
 
   /users/addToWatched:
     post:
@@ -293,7 +307,7 @@ paths:
         "200":
           description: recipe added to favorites
 
-  /users/hreeLastWatchedRecipes:
+  /users/threeLastWatchedRecipes:
     get:
       tags:
       - Users
@@ -506,24 +520,3 @@ components:
         servings:
           type: integer
           description: servings amount
-    QueryFilters:
-      type: object
-      properties:
-        cuisine:
-          type: array
-          items:
-            type: string
-          description: cuisine of recipe
-          example: [italian]
-        diet:
-          type: array
-          items:
-            type: string
-          description: diet kind of recipe
-          example: [vegetarian]
-        intolerances:
-          type: array
-          items:
-            type: string
-          description: intolerance kind of recipe
-          example: [Gluten]

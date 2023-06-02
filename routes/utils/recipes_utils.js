@@ -74,7 +74,7 @@ async function addNewRecipe(username, recipe) {
             console.error('Error adding new recipe:', error);
             throw error;
         }
-    }
+}
 
 /////////////////////////////////////////// Helping functions
 function fullToPreviewRecipe(fullRecipe) {
@@ -100,9 +100,9 @@ async function arrayOfIdToPreviewRecipes(recipes_id_array) {
     return res;
 }
 
-
 /////////////////////////////////////////// Exports
 exports.getRecipeDetails = getRecipePreview;
 exports.getThreeRandomRecipes = getThreeRandomRecipes;
 exports.arrayOfIdToPreviewRecipes = arrayOfIdToPreviewRecipes;
 exports.addNewRecipe = addNewRecipe;
+exports.getPreviewRecipes = getPreviewRecipes;

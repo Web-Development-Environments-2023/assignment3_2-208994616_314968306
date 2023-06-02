@@ -3,6 +3,8 @@ var router = express.Router();
 const DButils = require("./utils/DButils");
 const user_utils = require("./utils/user_utils");
 const recipe_utils = require("./utils/recipes_utils");
+const search_utils = require("./utils/search_utils");
+
 
 /**
  * Authenticate all incoming requests by middleware
@@ -74,13 +76,10 @@ router.get('/threeLastWatchedRecipes', async (req,res,next) => {
   try{
     const username = req.session.username;
     const recipe_ids_dict = await user_utils.getWatchedRecipes(username);
-    console.log("id = " + recipe_ids_dict[0]);
     let recipes_id_array = [];
     recipe_ids_dict.map((element) => recipes_id_array.push(element.recipeID)); //extracting the recipe ids into array
     recipes_id_array = recipes_id_array.slice(0, 3);
-    console.log("id = " + recipes_id_array[0]);
     const results = await recipe_utils.arrayOfIdToPreviewRecipes(recipes_id_array);
-    console.log("13")
     res.status(200).send(results);
   } catch(error){
     next(error); 
@@ -97,31 +96,24 @@ router.post("/addNewRecipe", async (req, res, next) => {
 });
 
 /**
- * Search for recipes from spooncular API.
+ * Search for recipes from spooncular API
  */
-router.post("/search/:query/:amount", async (req, res, next) => {
-  const {query, amount} = req.params;
-  //set serach params
-  search_params = {};
-  search_params.query = query;
-  search_params.amount = amount;
-  search_params.instructionsRequired = true;
-  search_params.apiKey = process.env.spooncular_apiKey;
+router.get("/search", async (req, res, next) => {
+  try {
+    const recipes = await search_utils.searchRecipes(req.query);
 
-  //gives a default num
-  if (num != 5 && num != 10 && num != 15) {
-    search_params.number = 5;
+    if (recipes.length == 0) {
+      throw { status: 404, message: "No recipes found" };
+    }
+
+    const results = await search_utils.getPreviewRecipes(recipes);
+
+    res.status(200).send(results);
+
+  } catch (error) {
+    next({ status: 400, message: "Request failed" });
   }
-  //check if query params exists (cuisine / diet / intolerances) and add them to serach_params
-  search_utils.extarctQueryParams(req.body, search_params);
-  search_utils.searchForRecipes(search_params)
-  .then((recipes) => res.send(recipes))
-  .catch((err) => {
-    next(err);
-  })
 });
-
-
 
 
 module.exports = router;
