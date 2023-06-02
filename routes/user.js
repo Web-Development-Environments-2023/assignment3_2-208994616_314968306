@@ -110,12 +110,11 @@ router.post("/addNewRecipe", async (req, res, next) => {
 router.get("/search", async (req, res, next) => {
   try {
     const recipes = await search_utils.searchRecipes(req.query);
-
     if (recipes.length == 0) {
       throw { status: 404, message: "No recipes found" };
     }
 
-    const results = await search_utils.getPreviewRecipes(recipes);
+    const results = await search_utils.getPreviewRecipesFromSearch(recipes);
 
     res.status(200).send(results);
 

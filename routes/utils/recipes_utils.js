@@ -49,6 +49,7 @@ function filterRecipes(recipe) {
     return (recipe.instructions != "") && (recipe.image && recipe.image != "");
 }
 
+/////////////////////////////////////////// New recipe
 async function addNewRecipe(username, recipe) {
     try {
         const query = `INSERT INTO UserRecipes (username, RecipeImg, RecipeName, CookingTime, Likes, GlutenFree, isVegan, isVegetarian, ingredients, instructions, servings)
@@ -122,6 +123,7 @@ async function arrayOfIdToPreviewRecipes(recipes_id_array) {
 function convertIntToBoolean (num) {
     return num === 1 ? true : false;
 }
+
 async function getFullRecipe(recipeID) {
     fullRecipeInfo = await getRecipeInformation(recipeID)
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian,
