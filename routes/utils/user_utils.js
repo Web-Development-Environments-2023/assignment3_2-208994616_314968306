@@ -18,8 +18,6 @@ async function getWatchedRecipes(username){
     return recipeID_array
 }
 
-
-
 exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.markAsWatched = markAsWatched;

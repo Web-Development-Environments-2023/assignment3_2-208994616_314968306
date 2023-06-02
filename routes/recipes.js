@@ -17,6 +17,15 @@ router.get("/random", async (req, res, next) => {
   }
 });
 
+router.get("/showFullRecipe/:recipeId", async (req, res, next) => {
+  try {
+      const fullRecipe = await recipes_utils.getFullRecipe(req.params.recipeId);
+      res.send(fullRecipe);
+  } catch (error) {
+      next(error);
+  }
+});
+
 
 /**
  * This path returns a full details of a recipe by its id

@@ -41,10 +41,8 @@ router.post('/addToFavorites', async (req,res,next) => {
  * This path returns the favorites recipes that were saved by the logged-in user
  */
 router.get('/getFavorites', async (req,res,next) => {
-  console.log("saar")
   try{
     const username = req.session.username;
-    // let favorite_recipes = {};
     const recipe_ids_dict = await user_utils.getFavoriteRecipes(username);
     let recipe_ids_array = [];
     recipe_ids_dict.map((element) => recipe_ids_array.push(element.recipeID)); //extracting the recipe ids into array
@@ -54,6 +52,17 @@ router.get('/getFavorites', async (req,res,next) => {
     next(error); 
   }
 });
+
+router.get('/getCreatedRecipes', async (req,res,next) => {
+  try{
+    const username = req.session.username;
+    const recipes = await recipe_utils.getCreatedRecipes(username);
+    res.status(200).send(recipes);
+  } catch(error){
+    next(error); 
+  }
+});
+
 
 /**
  * This path gets body with recipeId and save this recipe in the watched list of the logged-in user
@@ -89,7 +98,7 @@ router.get('/threeLastWatchedRecipes', async (req,res,next) => {
 router.post("/addNewRecipe", async (req, res, next) => {
   try {
       const new_recipe = await recipe_utils.addNewRecipe(req.session.username,req.body);
-      res.status(200).send(new_recipe); // TODO FIX ERROR HERE - Probably wrong send type
+      res.status(200).send("The Recipe was successfully added");; // can also send new_recipe if needed - preview
   } catch (error) {
       next(error);
   }

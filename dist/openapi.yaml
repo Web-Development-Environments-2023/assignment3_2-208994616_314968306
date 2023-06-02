@@ -109,22 +109,21 @@ paths:
               schema:
                 $ref: '#/components/schemas/Recipe'
 
-  /recipes/showFullRecipe:
-    post:
+  /recipes/showFullRecipe/{recipeId}:
+    get:
       tags:
       - Recipes
       summary: Show full information of recipe
       description: Show full information of recipe
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                recipeId:
-                  type: integer
-                  description: recipe's id which the user saved
-                  example: 100
+      parameters:
+      - name: recipeId
+        in: path
+        description: recipe's id
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
       responses:
         "200":
           description: Recipe full information
@@ -164,11 +163,7 @@ paths:
               $ref: '#/components/schemas/NewRecipe'
       responses:
         "200":
-          description: recipe preview
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Recipe'
+          description: new recipe added
 
   /users/getCreatedRecipes:
     get:
@@ -329,39 +324,6 @@ paths:
 
 components:
   schemas:
-    Recipe:
-      type: object
-      properties:
-        id:
-          type: integer
-          description: ID
-        title:
-          type: string
-          description: name
-          format: url
-        image:
-          type: string
-          description: image
-        CookingTime:
-          type: integer
-          description: cooking time
-        Likes:
-          type: integer
-        GlutenFree:
-          type: boolean
-          description: is gluten free
-        isVegan:
-          type: boolean
-          description: is vegan
-        isVegetarian:
-          type: boolean
-          description: is vegeterian
-        isCicked:
-          type: boolean
-          description: was clicked by the user
-        isFavorite:
-          type: boolean
-          description: was favorited by the user
     User:
       required:
       - country
@@ -426,30 +388,28 @@ components:
           example: John!Smith55
     FullRecipe:
       required:
+      - id
+      - title
+      - image
       - CookingTime
       - GlutenFree
-      - RecipeID
-      - RecipeImg
-      - RecipeName
       - ingredients
       - instructions
-      - isClicked
-      - isFavorite
       - isVegan
       - isVegetarian
       - servings
       type: object
       properties:
-        RecipeImg:
-          type: string
-          description: image
-        RecipeID:
+        id:
           type: integer
           description: ID
-        RecipeName:
+        title:
           type: string
           description: name
           format: url
+        image:
+          type: string
+          description: image
         CookingTime:
           type: integer
           description: cooking time
@@ -464,12 +424,6 @@ components:
         isVegetarian:
           type: boolean
           description: is vegeterian
-        isCicked:
-          type: boolean
-          description: was clicked by the user
-        isFavorite:
-          type: boolean
-          description: was favorited by the user
         ingredients:
           type: string
           description: ingredients
@@ -479,6 +433,42 @@ components:
         servings:
           type: integer
           description: servings amount
+    Recipe:
+      required:
+       - id
+       - title
+       - image
+       - CookingTime
+       - Likes
+       - GlutenFree
+       - isVegan
+       - isVegetarian
+      type: object
+      properties:
+        id:
+          type: integer
+          description: ID
+        title:
+          type: string
+          description: name
+          format: url
+        image:
+          type: string
+          description: image
+        CookingTime:
+          type: integer
+          description: cooking time
+        Likes:
+          type: integer
+        GlutenFree:
+          type: boolean
+          description: is gluten free
+        isVegan:
+          type: boolean
+          description: is vegan
+        isVegetarian:
+          type: boolean
+          description: is vegeterian
     NewRecipe:
       required:
       - CookingTime

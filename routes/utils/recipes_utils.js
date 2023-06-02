@@ -50,11 +50,10 @@ function filterRecipes(recipe) {
 }
 
 async function addNewRecipe(username, recipe) {
-    // REMOVING LIKES MAYBE??
     try {
         const query = `INSERT INTO UserRecipes (username, RecipeImg, RecipeName, CookingTime, Likes, GlutenFree, isVegan, isVegetarian, ingredients, instructions, servings)
                    VALUES ('${username}', '${recipe.RecipeImg}', '${recipe.RecipeName}', ${recipe.CookingTime}
-                   , 0, ${recipe.GlutenFree}, ${recipe.isVegan}, ${recipe.isVegetarian}
+                   , ${recipe.GlutenFree}, ${recipe.isVegan}, ${recipe.isVegetarian}
                    , '${recipe.ingredients}', '${recipe.instructions}', ${recipe.servings})`;
 
         const result = await DButils.execQuery(query);
@@ -69,17 +68,37 @@ async function addNewRecipe(username, recipe) {
             vegetarian: recipe.isVegetarian,
             glutenFree: recipe.GlutenFree
         };
-        return out;
+        return out; // Returns preview recipe but not utilized
         } catch (error) {
             console.error('Error adding new recipe:', error);
             throw error;
         }
 }
+async function getCreatedRecipes(username){
+    const fullrecipes_array = await DButils.execQuery(`select * from UserRecipes where username='${username}'`);
+    recipes_array = []
+    fullrecipes_array.forEach(element => {
+        let { recipeID, RecipeName, CookingTime, RecipeImg
+            , isVegan, isVegetarian, GlutenFree } = element;
+        preview_recipe = {
+                id: recipeID,
+                title: RecipeName,
+                readyInMinutes: CookingTime,
+                image: RecipeImg,
+                popularity: 0,
+                vegan: convertIntToBoolean(isVegan),
+                vegetarian: convertIntToBoolean(isVegetarian),
+                glutenFree: convertIntToBoolean(GlutenFree) 
+        }
+        recipes_array.push(preview_recipe);
+    });  
+    return recipes_array
+}
 
 /////////////////////////////////////////// Helping functions
 function fullToPreviewRecipe(fullRecipe) {
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = fullRecipe;
-    preview_recipe = {
+    const preview_recipe = { // TODO MATCH KEY NAMES TO API
             id: id,
             title: title,
             readyInMinutes: readyInMinutes,
@@ -100,9 +119,33 @@ async function arrayOfIdToPreviewRecipes(recipes_id_array) {
     return res;
 }
 
+function convertIntToBoolean (num) {
+    return num === 1 ? true : false;
+}
+async function getFullRecipe(recipeID) {
+    fullRecipeInfo = await getRecipeInformation(recipeID)
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian,
+         glutenFree, analyzedInstructions,extendedIngredients, servings } = fullRecipeInfo.data;
+    const fullRecipe = {
+        id: id,
+        title: title,
+        image: image,
+        CookingTime: readyInMinutes,
+        Likes: aggregateLikes,
+        GlutenFree: glutenFree,
+        isVegan: vegan,
+        isVegetarian: vegetarian,
+        ingredients: extendedIngredients,
+        instructions: analyzedInstructions, 
+        servings: servings
+    };
+    return fullRecipe;
+}
+
 /////////////////////////////////////////// Exports
 exports.getRecipeDetails = getRecipePreview;
 exports.getThreeRandomRecipes = getThreeRandomRecipes;
 exports.arrayOfIdToPreviewRecipes = arrayOfIdToPreviewRecipes;
 exports.addNewRecipe = addNewRecipe;
-exports.getPreviewRecipes = getPreviewRecipes;
+exports.getCreatedRecipes = getCreatedRecipes;
+exports.getFullRecipe = getFullRecipe;
