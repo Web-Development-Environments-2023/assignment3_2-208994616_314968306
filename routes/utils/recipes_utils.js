@@ -98,7 +98,7 @@ async function getCreatedRecipes(username){
 /////////////////////////////////////////// Helping functions
 function fullToPreviewRecipe(fullRecipe) {
     let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian, glutenFree } = fullRecipe;
-    preview_recipe = {
+    const preview_recipe = { // TODO MATCH KEY NAMES TO API
             id: id,
             title: title,
             readyInMinutes: readyInMinutes,
@@ -122,7 +122,25 @@ async function arrayOfIdToPreviewRecipes(recipes_id_array) {
 function convertIntToBoolean (num) {
     return num === 1 ? true : false;
 }
-
+async function getFullRecipe(recipeID) {
+    fullRecipeInfo = await getRecipeInformation(recipeID)
+    let { id, title, readyInMinutes, image, aggregateLikes, vegan, vegetarian,
+         glutenFree, analyzedInstructions,extendedIngredients, servings } = fullRecipeInfo.data;
+    const fullRecipe = {
+        id: id,
+        title: title,
+        image: image,
+        CookingTime: readyInMinutes,
+        Likes: aggregateLikes,
+        GlutenFree: glutenFree,
+        isVegan: vegan,
+        isVegetarian: vegetarian,
+        ingredients: extendedIngredients,
+        instructions: analyzedInstructions, 
+        servings: servings
+    };
+    return fullRecipe;
+}
 
 /////////////////////////////////////////// Exports
 exports.getRecipeDetails = getRecipePreview;
@@ -130,3 +148,4 @@ exports.getThreeRandomRecipes = getThreeRandomRecipes;
 exports.arrayOfIdToPreviewRecipes = arrayOfIdToPreviewRecipes;
 exports.addNewRecipe = addNewRecipe;
 exports.getCreatedRecipes = getCreatedRecipes;
+exports.getFullRecipe = getFullRecipe;
