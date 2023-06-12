@@ -52,7 +52,7 @@ function filterRecipes(recipe) {
 /////////////////////////////////////////// New recipe
 async function addNewRecipe(username, recipe) {
     try {
-        const query = `INSERT INTO UserRecipes (username, RecipeImg, RecipeName, CookingTime, Likes, GlutenFree, isVegan, isVegetarian, ingredients, instructions, servings)
+        const query = `INSERT INTO UserRecipes (username, RecipeImg, RecipeName, CookingTime, GlutenFree, isVegan, isVegetarian, ingredients, instructions, servings)
                    VALUES ('${username}', '${recipe.RecipeImg}', '${recipe.RecipeName}', ${recipe.CookingTime}
                    , ${recipe.GlutenFree}, ${recipe.isVegan}, ${recipe.isVegetarian}
                    , '${recipe.ingredients}', '${recipe.instructions}', ${recipe.servings})`;
@@ -64,7 +64,7 @@ async function addNewRecipe(username, recipe) {
             title: recipe.RecipeName,
             readyInMinutes: recipe.CookingTime,
             image: recipe.RecipeImg,
-            popularity: 0,
+            Likes: 0,
             vegan: recipe.isVegan,
             vegetarian: recipe.isVegetarian,
             glutenFree: recipe.GlutenFree
@@ -86,7 +86,7 @@ async function getCreatedRecipes(username){
                 title: RecipeName,
                 readyInMinutes: CookingTime,
                 image: RecipeImg,
-                popularity: 0,
+                Likes: 0,
                 vegan: convertIntToBoolean(isVegan),
                 vegetarian: convertIntToBoolean(isVegetarian),
                 glutenFree: convertIntToBoolean(GlutenFree) 
@@ -104,7 +104,7 @@ function fullToPreviewRecipe(fullRecipe) {
             title: title,
             readyInMinutes: readyInMinutes,
             image: image,
-            popularity: aggregateLikes,
+            Likes: aggregateLikes,
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree

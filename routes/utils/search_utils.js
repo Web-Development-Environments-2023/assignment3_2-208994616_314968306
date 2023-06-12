@@ -38,9 +38,7 @@ async function getPreviewRecipesFromSearch(arrayRecipes) {
             aggregateLikes: recipe.aggregateLikes,
             vegan: recipe.vegan,
             vegetarian: recipe.vegetarian,
-            glutenFree: recipe.glutenFree,
-            favorite: false,
-            watched: false
+            glutenFree: recipe.glutenFree
         };
     });
 

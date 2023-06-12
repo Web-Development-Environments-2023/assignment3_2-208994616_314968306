@@ -83,31 +83,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/Recipe'
         "404":
-          description: recipeId is not exists
-
-  /recipes/showPreviewRecipe:
-    post:
-      tags:
-      - Recipes
-      summary: Show preview of recipe
-      description: Show preview of recipe
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                recipeId:
-                  type: integer
-                  description: recipe's id which the user saved
-                  example: 716429
-      responses:
-        "200":
-          description: recipe preview
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Recipe'
+          description: recipe ID does not exist
 
   /recipes/showFullRecipe/{recipeId}:
     get:
@@ -204,6 +180,8 @@ paths:
       responses:
         "200":
           description: recipe added to favorites
+        "409":
+          description: recipe already exists in favorites
   
   /users/getFavorites:
     get:
