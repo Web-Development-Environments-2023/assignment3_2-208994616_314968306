@@ -30,6 +30,12 @@ router.post('/addToFavorites', async (req,res,next) => {
   try{
     const username = req.session.username;
     const recipeID = req.body.recipeId;
+    const existingFavorite = await DButils.execQuery(
+      `SELECT * FROM FavoriteRecipes WHERE username = '${username}' AND recipeID = ${recipeID}`
+    );
+    if (existingFavorite.length > 0) {
+      return;
+    }
     await user_utils.markAsFavorite(username, recipeID);
     res.status(200).send("The Recipe successfully saved as favorite");
     } catch(error){
@@ -71,6 +77,12 @@ router.post('/addToWatched', async (req,res,next) => {
   try{
     const username = req.session.username;
     const recipeID = req.body.recipeId;
+    const existingWatched = await DButils.execQuery(
+      `SELECT * FROM WatchedRecipes WHERE username = '${username}' AND recipeID = ${recipeID}`
+    );
+    if (existingWatched.length > 0) {
+      return;
+    }
     await user_utils.markAsWatched(username, recipeID);
     res.status(200).send("The Recipe successfully saved as watched");
     } catch(error){
