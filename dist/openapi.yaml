@@ -203,6 +203,26 @@ paths:
         "401":
           description: user is not authorized
 
+  /users/getFavoriteIds:
+    get:
+      tags:
+      - Users
+      summary: Get user's favorite recipe ids
+      description: Get user's favorite recipe ids
+      responses:
+        "200":
+          description: favorites found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/RecipeId'
+        "404":
+          description: No recipes found
+        "401":
+          description: user is not authorized
+
   /users/search:
     get:
       tags:
@@ -300,8 +320,32 @@ paths:
         "404":
           description: No recipes found
 
+  /users/watchedRecipeIds:
+    get:
+      tags:
+      - Users
+      summary: Show watched recipe ids
+      description: Show watched recipe ids
+      responses:
+        "200":
+          description:  Watched recipe ids found
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                $ref: '#/components/schemas/RecipeId'
+        "401":
+          description: user is not authorized
+        "404":
+          description: No recipes found
+
 components:
   schemas:
+    RecipeId:
+      type: integer
+      description: ID
+
     Recipe:
       type: object
       properties:
@@ -335,6 +379,7 @@ components:
         isFavorite:
           type: boolean
           description: was favorited by the user
+
     User:
       required:
       - country
@@ -378,6 +423,7 @@ components:
           format: email
           example: JohnSm55@gmail.com
       description: info for user register
+
     LoginInfo:
       required:
       - password
@@ -397,6 +443,7 @@ components:
           description: password
           format: password
           example: John!Smith55
+
     FullRecipe:
       required:
       - CookingTime
@@ -452,6 +499,7 @@ components:
         servings:
           type: integer
           description: servings amount
+
     NewRecipe:
       required:
       - CookingTime
