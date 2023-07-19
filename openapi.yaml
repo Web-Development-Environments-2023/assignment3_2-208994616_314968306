@@ -6,21 +6,21 @@ info:
   version: 0.7.0
 servers:
 # local:
-- url: "http://127.0.0.1:3000"
+- url: "http://127.0.0.1:3306"
 # remote:
 # - url: "http://132.72.65.211"
 tags:
 - name: Authentication
 - name: Users
 - name: Recipes
-
+- name: Search
 paths:
-  /register:
+  /Register:
     post:
       tags:
       - Authentication
-      summary: Register a new user
-      description: Register a new user
+      summary: register a new user
+      description: register a new user
       requestBody:
         content:
           application/json:
@@ -29,16 +29,15 @@ paths:
         required: true
       responses:
         "201":
-          description: User added to db
-        "400":
-          description: Username taken
-
-  /login:
+          description: user added to db
+        "409":
+          description: username taken
+  /Login:
     post:
       tags:
       - Authentication
-      summary: Login user operation
-      description: Check if the username is in the database and the password matches
+      summary: login user operation
+      description: check if the username is in the database and the password matches
       requestBody:
         content:
           application/json:
@@ -46,30 +45,26 @@ paths:
               $ref: '#/components/schemas/LoginInfo'
       responses:
         "200":
-          description: User logged in
+          description: user logged in
         "401":
-          description: Username and/or Password are incorrect
-
-  /logout:
+          description: username and/or password are incorrect
+  /Logout:
     post:
       tags:
       - Authentication
-      summary: Log out user
-      description: Log out user
+      summary: log out user
+      description: log out user
       responses:
         "200":
-          description: User logged out
-
-  /recipes/{recipeId}:
+          description: user logged out
+  /recipes/recipeFullInfo/{recipe_id}:
     get:
       tags:
       - Recipes
-      summary: Return preview details on recipe by his ID
-      description: Return preview details on recipe by his ID
+      summary: get full recipe by id
       parameters:
-      - name: recipeId
+      - name: recipe_id
         in: path
-        description: recipe's id
         required: true
         style: simple
         explode: false
@@ -77,61 +72,47 @@ paths:
           type: integer
       responses:
         "200":
-          description: Data about the recipe
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Recipe'
-        "404":
-          description: recipe ID does not exist
-
-  /recipes/showFullRecipe/{recipeId}:
-    get:
-      tags:
-      - Recipes
-      summary: Show full information of recipe
-      description: Show full information of recipe
-      parameters:
-      - name: recipeId
-        in: path
-        description: recipe's id
-        required: true
-        style: simple
-        explode: false
-        schema:
-          type: integer
-      responses:
-        "200":
-          description: Recipe full information
+          description: recipe
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/FullRecipe'
-                
-  /recipes/random:
-    get:
+  /recipes/recipePreview:
+    post:
       tags:
       - Recipes
-      summary: Get 3 random recipes
-      description: Get 3 random recipes
+      summary: show preview of recipe
+      description: show preview of recipe
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeID'
       responses:
-        '200':
-          description: Get 3 random recipes
+        "200":
+          description: recipe preview
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Recipe'
-        '404':
-          description: No recipes found
-
-  /users/addNewRecipe:
+                $ref: '#/components/schemas/Recipe'
+  /recipes/getThreeRandomRecipes:
     post:
       tags:
-      - Users
-      summary: Add a new recipe
-      description: Add a new recipe
+      - Recipes
+      summary: get three random recipes
+      responses:
+        "200":
+          description: three random recipes
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/3RandomRecipes'
+  /recipes/addNewRecipe:
+    post:
+      tags:
+      - Recipes
+      summary: add a new recipe
+      description: add a new recipe
       requestBody:
         content:
           application/json:
@@ -139,8 +120,38 @@ paths:
               $ref: '#/components/schemas/NewRecipe'
       responses:
         "200":
-          description: new recipe added
-
+          description: recipe preview
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Recipe'
+  /users/AddToFavorites:
+    post:
+      tags:
+      - Users
+      summary: add to favorite
+      description: add to favorite
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RecipeID'
+      responses:
+        "200":
+          description: recipe added to favorites
+  /users/getFavorites:
+    get:
+      tags:
+      - Users
+      summary: get favorite recipes
+      description: get favorite recipes
+      responses:
+        "200":
+          description: favorites found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserPersonalResults'
   /users/getCreatedRecipes:
     get:
       tags:
@@ -153,212 +164,94 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Recipe'
-        "404":
-          description: No recipes found
-        "401":
-          description: user is not authorized
-
-  /users/addToFavorites:
-    post:
-      tags:
-      - Users
-      summary: add to favorite
-      description: add to favorite
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                recipeId:
-                  type: integer
-                  description: recipe's id which the user saved
-                  example: 716429
-      responses:
-        "200":
-          description: recipe added to favorites
-        "409":
-          description: recipe already exists in favorites
-  
-  /users/getFavorites:
+                $ref: '#/components/schemas/UserPersonalResults'
+  /user/lastwatched:
     get:
       tags:
-      - Users
-      summary: Get user's favorite recipes
-      description: Get user's favorite recipes
+      - user
+      description: Get the preview of the last recipe the user watched
       responses:
         "200":
-          description: favorites found
+          description: the last recipe the user watched
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Recipe'
-        "404":
-          description: No recipes found
-        "401":
-          description: user is not authorized
-
-  /users/getFavoriteIds:
-    get:
-      tags:
-      - Users
-      summary: Get user's favorite recipe ids
-      description: Get user's favorite recipe ids
-      responses:
-        "200":
-          description: favorites found
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/RecipeId'
-        "404":
-          description: No recipes found
-        "401":
-          description: user is not authorized
-
-  /users/search:
-    get:
-      tags:
-        - Users
-      summary: Search recipes by text and filters
-      description: Search for recipes in spoonacular API
-      parameters:
-        - name: query
-          in: query
-          description: Search free text
-          required: true
-          schema:
-            type: string
-            example: Cake
-        - name: quantity
-          in: query
-          description: Number of results
-          required: true
-          schema:
-            type: integer
-            default: 5
-            example: 5
-        - name: cuisine
-          in: query
-          description: Cuisine of recipe
-          required: false
-          schema:
-            type: string
-            example: African
-        - name: diet
-          in: query
-          description: Diet kind of recipe
-          required: false
-          schema:
-            type: string
-            example: Gluten Free
-        - name: intolerances
-          in: query
-          description: Intolerances kind of recipe
-          required: false
-          schema:
-            type: string
-            example: Peanut
-      responses:
-        "200":
-          description: Searched recipes found
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: "#/components/schemas/Recipe"
-        "400":
-          description: Invalid params supplied
-        "404":
-          description: No recipes found
-
-  /users/addToWatched:
-    post:
-      tags:
-      - Users
-      summary: add to favorite
-      description: add to favorite
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                recipeId:
-                  type: integer
-                  description: recipe's id which the user saved
-                  example: 716429
-      responses:
-        "200":
-          description: recipe added to favorites
-
-  /users/threeLastWatchedRecipes:
-    get:
-      tags:
-      - Users
-      summary: Show the three last watched recipes
-      description: Show the three last watched recipes
-      responses:
-        "200":
-          description: Last watched recipes found
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
                 $ref: '#/components/schemas/Recipe'
-        "401":
-          description: user is not authorized
-        "404":
-          description: No recipes found
-
-  /users/watchedRecipeIds:
+  /users//search/{query}/{number}/{cuisine}/{diet}/{intolerances}:
     get:
       tags:
       - Users
-      summary: Show watched recipe ids
-      description: Show watched recipe ids
+      summary: search recipes
+      description: search recipes using external API
+      parameters:
+      - name: query
+        in: path
+        description: search query
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: number
+        in: path
+        description: number of results (5-15)
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+      - name: cuisine
+        in: path
+        description: is cuisin food needed or not
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: diet
+        in: path
+        description: diet
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      - name: intolerances
+        in: path
+        description: intolernces needed to be considered
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
       responses:
         "200":
-          description:  Watched recipe ids found
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                $ref: '#/components/schemas/RecipeId'
-        "401":
-          description: user is not authorized
-        "404":
-          description: No recipes found
-
+          description: '#/components/schemas/SearchResults'
+  /users/ThreeLastWatchedRecipes:
+    get:
+      tags:
+      - Users
+      - Recipes
+      summary: show the three last watched recipes
+      description: show the three last watched recipes
+      responses:
+        "200":
+          description: '#/components/schemas/3LastWatchedRecipes'
 components:
   schemas:
-    RecipeId:
-      type: integer
-      description: ID
-
     Recipe:
       type: object
       properties:
-        id:
-          type: integer
+        RecipeImg:
+          type: string
+          description: image
+        RecipeID:
+          type: string
           description: ID
-        title:
+        RecipeName:
           type: string
           description: name
           format: url
-        image:
-          type: string
-          description: image
         CookingTime:
           type: integer
           description: cooking time
@@ -379,7 +272,6 @@ components:
         isFavorite:
           type: boolean
           description: was favorited by the user
-
     User:
       required:
       - country
@@ -397,7 +289,7 @@ components:
           pattern: "^[A-Za-z]"
           type: string
           description: username length of 3-8 characters
-          example: User
+          example: ExampleUser
         firstname:
           type: string
           description: first name
@@ -417,13 +309,19 @@ components:
           description: password in length of 5-10 chars at least one of them is a number and a special characters
           format: password
           example: John!Smith55
+        passwordConfirmation:
+          maxLength: 10
+          minLength: 5
+          type: string
+          description: password confirmation
+          format: password
+          example: John!Smith55
         email:
           type: string
           description: email
           format: email
           example: JohnSm55@gmail.com
       description: info for user register
-
     LoginInfo:
       required:
       - password
@@ -435,7 +333,7 @@ components:
           minLength: 3
           type: string
           description: username
-          example: User
+          example: ExampleUser
         password:
           maxLength: 10
           minLength: 5
@@ -443,7 +341,20 @@ components:
           description: password
           format: password
           example: John!Smith55
-
+    "3RandomRecipes":
+      maxItems: 3
+      minItems: 3
+      type: array
+      description: Three random recipes
+      items:
+        $ref: '#/components/schemas/Recipe'
+    "3LastWatchedRecipes":
+      maxItems: 3
+      minItems: 3
+      type: array
+      description: 3 last viewed recipes
+      items:
+        $ref: '#/components/schemas/FullRecipe'
     FullRecipe:
       required:
       - CookingTime
@@ -464,7 +375,7 @@ components:
           type: string
           description: image
         RecipeID:
-          type: integer
+          type: string
           description: ID
         RecipeName:
           type: string
@@ -499,23 +410,31 @@ components:
         servings:
           type: integer
           description: servings amount
-
     NewRecipe:
       required:
       - CookingTime
       - GlutenFree
+      - RecipeID
       - RecipeImg
       - RecipeName
       - ingredients
       - instructions
+      - isClicked
+      - isFavorite
       - isVegan
       - isVegetarian
       - servings
+      - username
       type: object
       properties:
+        username:
+          type: string
         RecipeImg:
           type: string
           description: image
+        RecipeID:
+          type: string
+          description: ID
         RecipeName:
           type: string
           description: name
@@ -523,6 +442,8 @@ components:
         CookingTime:
           type: integer
           description: cooking time
+        Likes:
+          type: integer
         GlutenFree:
           type: boolean
           description: is gluten-free
@@ -532,6 +453,12 @@ components:
         isVegetarian:
           type: boolean
           description: is vegeterian
+        isCicked:
+          type: boolean
+          description: was clicked by the user
+        isFavorite:
+          type: boolean
+          description: was favorited by the user
         ingredients:
           type: string
           description: ingredients
@@ -541,3 +468,15 @@ components:
         servings:
           type: integer
           description: servings amount
+    RecipeID:
+      type: string
+    SearchResults:
+      maxItems: 15
+      minItems: 5
+      type: array
+      items:
+        $ref: '#/components/schemas/Recipe'
+    UserPersonalResults:
+      type: array
+      items:
+        $ref: '#/components/schemas/Recipe'
