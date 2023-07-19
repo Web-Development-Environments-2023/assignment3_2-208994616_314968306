@@ -80,7 +80,7 @@ async function getCreatedRecipes(username){
     recipes_array = []
     fullrecipes_array.forEach(element => {
         let { recipeID, RecipeName, CookingTime, RecipeImg
-            , isVegan, isVegetarian, GlutenFree } = element;
+            , isVegan, isVegetarian, GlutenFree, ingredients, instructions, servings } = element;
         preview_recipe = {
                 id: recipeID,
                 title: RecipeName,
@@ -89,7 +89,10 @@ async function getCreatedRecipes(username){
                 Likes: 0,
                 vegan: convertIntToBoolean(isVegan),
                 vegetarian: convertIntToBoolean(isVegetarian),
-                glutenFree: convertIntToBoolean(GlutenFree) 
+                glutenFree: convertIntToBoolean(GlutenFree),
+                ingredients: ingredients,
+                instructions: instructions,
+                servings: servings
         }
         recipes_array.push(preview_recipe);
     });  
